@@ -1,0 +1,15 @@
+# unecessary files for docker build
+NOTE.md
+README.md
+api-test.http
+# img/
+.idea/
+
+# used only for local development
+rust-toolchain.toml
+Makefile.toml
+compose.yml
+# infra
+docker
+# frontend
+target
