@@ -1,0 +1,17 @@
+###  health
+
+GET http://localhost:8080 HTTP/1.1
+content-type: application/json
+
+
+
+### test post request
+POST http://localhost:8080/echo HTTP/1.1
+content-type: application/json
+
+{
+    "title": "how to develop rust api",
+    "author": "hiro-lapis",
+    "isbn": "4649",
+    "description": "Rust was named for the group of fungi that are over-engineered for survival"
+}
