@@ -7,5 +7,14 @@ edition = "2021"
 name = "app"
 path = "src/bin/main.rs"
 
-[dependencies]
+[workspace.dependencies]
 actix-web = "4.10.2"
+async-graphql = "7.0.16"
+async-graphql-actix-web = "=7.0.16"
+chrono = { version = "0.4.40", default-features = false, features = ["serde", "clock"] }
+
+[dependencies]
+actix-web.workspace = true
+async-graphql.workspace = true
+async-graphql-actix-web.workspace = true
+chrono.workspace = true

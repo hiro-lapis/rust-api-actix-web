@@ -1,29 +1,60 @@
+use actix_web::web::Data;
+use actix_web::{guard, web, App, HttpResponse, HttpServer, Result};
+use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
+use async_graphql::{EmptyMutation, EmptySubscription, Object, Schema};
+use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
+use chrono::{Datelike, FixedOffset, Timelike, Utc};
 use std::net::Ipv4Addr;
 
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+struct Query;
 
-#[get("/")]
-async fn hello() -> impl Responder {
-    HttpResponse::Ok().body("Hello world!")
+#[Object]
+impl Query {
+    // # on the frontend { totalPhotos }
+    async fn total_photos(&self) -> usize {
+        42
+    }
+    async fn now(&self) -> String {
+        let jp_now = Utc::now().with_timezone(FixedOffset::east_opt(9 * 3600).as_ref().unwrap());
+        format!(
+            "{}年{}月{}日 {}:{}:{}",
+            jp_now.year(),
+            jp_now.month(),
+            jp_now.day(),
+            jp_now.hour(),
+            jp_now.minute(),
+            jp_now.second()
+        )
+    }
 }
 
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
+type ApiSchema = Schema<Query, EmptyMutation, EmptySubscription>;
+
+async fn index(schema: web::Data<ApiSchema>, req: GraphQLRequest) -> GraphQLResponse {
+    schema.execute(req.into_inner()).await.into()
 }
 
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
+async fn index_playground() -> Result<HttpResponse> {
+    let source = playground_source(GraphQLPlaygroundConfig::new("/").subscription_endpoint("/"));
+    Ok(HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(source))
 }
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| {
+    let schema = Schema::build(Query, EmptyMutation, EmptySubscription).finish();
+
+    println!("Playground: http://localhost:8000");
+
+    HttpServer::new(move || {
         App::new()
-            .service(hello)
-            .service(echo)
-            .route("/hey", web::get().to(manual_hello))
+            .app_data(Data::new(schema.clone()))
+            // json api
+            .service(web::resource("/").guard(guard::Post()).to(index))
+            // html api
+            .service(web::resource("/").guard(guard::Get()).to(index_playground))
     })
-    // TODO: modify 0.0.0.0 in production
     .bind((Ipv4Addr::LOCALHOST, 8080))?
     .run()
     .await
