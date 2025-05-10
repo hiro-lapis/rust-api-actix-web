@@ -159,10 +159,10 @@ run_task = "test"
 # migration
 [tasks.migrate]
 extend = "set-env-local"
-install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
+install_crate = { crate_name = "diesel_cli", binary = "diesel", test_arg = "--help", version = "0.7.3" }
 script = '''
 #!/bin/bash
-until sqlx migrate run --source adapter/migrations; do
+until diesel migration run
     sleep 1
 done
 '''
@@ -252,3 +252,19 @@ args = [
   "-f", "./docker/ecr/Dockerfile",
   "."
 ]
+
+# create .env for diesel CLI
+[tasks.create-env-diesel]
+script = '''
+#!/bin/bash
+# DATABASE_URLの行を除外して一時ファイルに保存
+if [ -f .env ]; then
+    grep -v "^DATABASE_URL=" .env > .env.tmp
+else
+    touch .env.tmp
+fi
+# 新しいDATABASE_URLを追加
+echo "DATABASE_URL=postgresql://${DATABASE_USERNAME}:${DATABASE_PASSWORD}@localhost:${DATABASE_PORT_OUTER}/${DATABASE_NAME}" >> .env.tmp
+# 一時ファイルを元のファイルに移動
+mv .env.tmp .env
+'''

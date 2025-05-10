@@ -12,9 +12,17 @@ actix-web = "4.10.2"
 async-graphql = "7.0.16"
 async-graphql-actix-web = "=7.0.16"
 chrono = { version = "0.4.40", default-features = false, features = ["serde", "clock"] }
+diesel = { version = "2.2.9", features = ["postgres"] }
+# build libpq and openssl as part of the build process
+# uncomment these lines if you run into setup issues
+# pq-sys = { version = "0.6", features = ["bundled"] }
+# openssl-sys = { version = "0.9.100", features = ["vendored"] }
+dotenvy = "0.15.7"
 
 [dependencies]
 actix-web.workspace = true
 async-graphql.workspace = true
 async-graphql-actix-web.workspace = true
 chrono.workspace = true
+diesel.workspace = true
+dotenvy.workspace = true
