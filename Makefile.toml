@@ -61,7 +61,6 @@ args = [
 extend = "set-env-local"
 # use precon not dep, to avoid reset env by env set of other containers
 # NOTE: if u want use set-local-env in before-build, apply 'extend' in before-build
-precondition = ["before-build"]
 command = "cargo"
 args = ["run", "${@}"]
 
@@ -167,22 +166,30 @@ until diesel migration run
 done
 '''
 
-[tasks.gen-migrate]
-install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
-command = "sqlx"
-args = ["migrate", "add", "-r", "start", "--source", "adapter/migrations"]
-
-[tasks.sqlx]
+[tasks.migration-list]
 extend = "set-env-local"
-install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
-command = "sqlx"
-args = ["${@}", "--source", "adapter/migrations"]
+install_crate = { crate_name = "diesel_cli", binary = "diesel", test_arg = "--help", version = "0.7.3" }
+script = '''
+#!/bin/bash
+diesel migration list
+'''
 
-[tasks.sqlx-prepare]
-extend = "set-env-local"
-install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
-command = "cargo"
-args = ["sqlx", "prepare"]
+# [tasks.gen-migrate]
+# install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
+# command = "sqlx"
+# args = ["migrate", "add", "-r", "start", "--source", "adapter/migrations"]
+
+# [tasks.sqlx]
+# extend = "set-env-local"
+# install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
+# command = "sqlx"
+# args = ["${@}", "--source", "adapter/migrations"]
+
+# [tasks.sqlx-prepare]
+# extend = "set-env-local"
+# install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
+# command = "cargo"
+# args = ["sqlx", "prepare"]
 
 [tasks.psql]
 extend = "set-env-local"
