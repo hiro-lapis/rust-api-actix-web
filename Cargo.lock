@@ -311,6 +311,7 @@ dependencies = [
  "async-graphql",
  "async-graphql-actix-web",
  "chrono",
+ "db-schema",
  "diesel",
  "dotenvy",
 ]
@@ -687,6 +688,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "db-schema"
+version = "0.1.0"
+dependencies = [
+ "async-graphql",
+ "chrono",
+ "diesel",
+]
+
+[[package]]
 name = "deranged"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -724,6 +734,7 @@ checksum = "34d3950690ba3a6910126162b47e775e203006d4242a15de912bec6c0a695153"
 dependencies = [
  "bitflags",
  "byteorder",
+ "chrono",
  "diesel_derives",
  "itoa",
  "pq-sys",
