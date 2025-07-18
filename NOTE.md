@@ -1,28 +1,22 @@
-### QA
+# QA
+
+## overview
 
 Q. What benefit Rust gives us ?
 A. Rust is the language can run fast and use right weight memory, which enables to cut down the cost in crowd environment.  Rust also has robust language features, such as ownership and strict type function. The robustness is enough to be used in business critical situation, like payment service.
 
+
+## rust
+
+### basic
+
 Q. What is `into()`? 
 A. into() is a trait that enables a struct to cast another type. If into is implemented, it implicitly enables from() as well.  
 
+### cargo
+
 Q. Why main function fails when `cargo run`?  
 A. `cargo run` simply execute rust file while `cargo make run` execute program following Makefile.toml which contains env info. Thus, `cargo make run` is dominant in practical application.  
-
-Q. What is shared ?  
-A. Common dependencies added by this project.  
-
-Q. What is adapter?  
-A. Adapter is the layer name that accesses persitance layers including repositories. repository, concreate implementation to connect DB and querying is one of the struct belongs adapter. `Adapter` means that the layer adapt the project api to external servers.  
-
-Q. what api layer?
-A. Api is the layer that receive input. handler mainly play the role in this functionality.  
-
-Q. what api kernel?
-A. Kernel is the layer that format and process input for following function. model handles domain logic in this layer. repository in this layer is interface for integration of  external services and regis. 
-
-Q. Why repository exists in two layers, kernel and adapter?  
-A. For testability, kernel/repository is helpful to mock functions that avoid executing external services.  
 
 Q. What is workspace in rust?
 A. Mudularization in rust is termed as workspace. Run `cargo new --lib`, writing workspace member in cargo.toml, and open crate `pub mod xxx` in lib.rs, enables create project's libraries.  
@@ -52,13 +46,9 @@ fn main() {
 }
 ```
 
-Q. Whan run `docker compose up -d app --build`, this will fail and show errors shows env vars is not set. why?
-A. Because env vars are defined in Makefile.toml, not .env. Therefore, docker build commands always have to be executed by `cargo make xxx`.  
-
 Q. What is macro?  
 A. Macro is grouped functionality that can be seen C, C++. Rust has couple of types of macro(procedual, declarative), both of them are code that can write other code known as meta programming.  
 https://doc.rust-jp.rs/book-ja/ch19-06-macros.html#%E5%B1%9E%E6%80%A7%E3%81%8B%E3%82%89%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92%E7%94%9F%E6%88%90%E3%81%99%E3%82%8B%E6%89%8B%E7%B6%9A%E3%81%8D%E7%9A%84%E3%83%9E%E3%82%AF%E3%83%AD  
-
 
 Q. When I command `sqlx migrate add -r start --source adapter/migrations`, this failes in error `sqlx not found`. How can solve?  
 A. Plz run make command that contains `install_crate = { crate_name = "sqlx-cli" ...`. If only do that, sqlx command line will be automatically installed and be able to make migration file.  
@@ -82,6 +72,27 @@ impl Greet for User {
     }
 }
 ```
+
+## archtecture
+
+Q. What is shared ?  
+A. Common dependencies added by this project.  
+
+Q. What is adapter?  
+A. Adapter is the layer name that accesses persitance layers including repositories. repository, concreate implementation to connect DB and querying is one of the struct belongs adapter. `Adapter` means that the layer adapt the project api to external servers.  
+
+Q. what api layer?
+A. Api is the layer that receive input. handler mainly play the role in this functionality.  
+
+Q. what api kernel?
+A. Kernel is the layer that format and process input for following function. model handles domain logic in this layer. repository in this layer is interface for integration of  external services and regis. 
+
+Q. Why repository exists in two layers, kernel and adapter?  
+A. For testability, kernel/repository is helpful to mock functions that avoid executing external services.  
+
+Q. Whan run `docker compose up -d app --build`, this will fail and show errors shows env vars is not set. why?
+A. Because env vars are defined in Makefile.toml, not .env. Therefore, docker build commands always have to be executed by `cargo make xxx`.  
+
 
 Q. Is there any difference between interface in other language and trait in rust?  
 A. Trait in rust accepts default implementation.  
@@ -132,6 +143,32 @@ A. This is because api container doesn't have rust tool chains. This enviroment 
 
 Q. 
 A. 
+
+## diesel diesel_cli sqlx
+
+### migration
+
+Q. What options we can have for migration files management?  
+A. 2 options. 1.[sqlx cli](https://github.com/launchbadge/sqlx), 2.[diesel cli](https://diesel.rs/guides/getting-started#installing-diesel-cli).
+
+### query
+
+Q. What is the difference between diesel and sqlx?
+A. The answer is officially displayed.
+https://diesel.rs/compare_diesel.html
+
+In the nutshell,
+Diesel is schema first. They generates `schema.rs`, which defines DB structure strictly with Rust type system.
+Developers write code with query builder that can take advantage of schema.rs. The orm correctness is checked by the type definition.  
+
+Sqlx is DB table first. Sqlx generate `.sqlx` directory that express DDL with json format. While this gives type check when developers are writing sql, it's not complete.  
+Additionally, sqlx relies on DB DDL, when it comes to left join, some fields can be nullable because of outer join, but the columns are NOT NULL as DDL. Sqlx cannot infer this nullability.
+
+
+Q. Tell me how sqlx check queries.
+A. As a general rule, queries created using the sqlx::query() and sqlx::query_as() functions are unchecked, while those created with the macros sqlx::query! and sqlx::query_as! (and several others) are checked.  
+https://www.matildasmeds.com/posts/no-more-unchecked-sqlx-queries/
+
 
 ### Impression
 

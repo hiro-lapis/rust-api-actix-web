@@ -1,0 +1,3 @@
+- Run diesel CLI on root directory. migration file will be generated in migrations dir in this crate based diesel.toml
+- `schema.rs`, type definition of DB tables file is automatically generated or updated when run disel run command. Don't edit it manually.
+- On the other hand, creating and writing model files is the developer's role.
