@@ -1,5 +1,12 @@
 # rust-api-actix-web
 
+Boiler plate of graphql api composed with actix-web.  
+
+## Dependencies
+
+- [Actix Web](https://actix.rs/)
+- [Diesel/Diesel CLI](https://diesel.rs/)
+
 ### set up
 
 Each task defined in Makefile.toml can be excuted by `cargo make xxx`  
@@ -53,8 +60,11 @@ curl --proto '=https' --tlsv1.2 -LsSf https://github.com/diesel-rs/diesel/releas
 ### migration
 
 ```
-diesel migration <run/revert/redo>
+DATABASE_URL="postgresql://localhost:5432/app?user=app&password=passwd" diesel migration <run/revert/redo>
 diesel migration list
+
+// via makefile
+cargo make migration-list
 ```
 
 If you want to get to know more about migration, `diesel migration help` is useful.  
