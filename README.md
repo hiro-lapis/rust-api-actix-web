@@ -75,4 +75,4 @@ Make sure not modify `schema.rs` manually!
 
 ### urls
 
-- `http://127.0.0.1:8080` served as graphql api playground.  
+- `http://127.0.0.1:8080` served as graphql api playground.
