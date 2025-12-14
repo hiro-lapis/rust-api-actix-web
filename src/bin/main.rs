@@ -4,7 +4,7 @@ use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql::{EmptyMutation, EmptySubscription, Object, Schema};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 use chrono::{Datelike, FixedOffset, Timelike, Utc};
-use std::net::Ipv4Addr;
+use std::net::{Ipv4Addr, Ipv6Addr};
 use diesel::prelude::*;
 use dotenvy::dotenv;
 use std::env;
@@ -64,9 +64,11 @@ async fn index_playground() -> Result<HttpResponse> {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    // Load env vars from `.env` if present (docker-compose / cargo-make may also provide env directly).
+    dotenv().ok();
     let schema = Schema::build(Query, EmptyMutation, EmptySubscription).finish();
 
-    println!("Playground: http://localhost:8000");
+    println!("Playground: http://localhost:8080");
 
     HttpServer::new(move || {
         App::new()
@@ -76,7 +78,8 @@ async fn main() -> std::io::Result<()> {
             // html api
             .service(web::resource("/").guard(guard::Get()).to(index_playground))
     })
-    .bind((Ipv4Addr::LOCALHOST, 8080))?
+    .bind((Ipv6Addr::LOCALHOST, 8080))? // localhost base
+    .bind((Ipv4Addr::LOCALHOST, 8080))? // 127.0.0.1 base
     .run()
     .await
 }
