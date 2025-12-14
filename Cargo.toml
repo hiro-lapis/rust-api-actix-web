@@ -17,6 +17,7 @@ members = [
 db-schema = { path = "./db-schema" }
 actix-web = "4.10.2"
 # 構造体をGraphqlで返すために使用
+# https://async-graphql.github.io/async-graphql/en/define_simple_object.html
 # レスポンスに使う構造体定義に、OutputType traitを使う
 async-graphql = "7.0.16"
 async-graphql-actix-web = "=7.0.16"
