@@ -19,7 +19,8 @@ actix-web = "4.10.2"
 # 構造体をGraphqlで返すために使用
 # https://async-graphql.github.io/async-graphql/en/define_simple_object.html
 # レスポンスに使う構造体定義に、OutputType traitを使う
-async-graphql = "7.0.16"
+# DateTime型を使うためにfeatureを設定
+async-graphql = { version = "7.0.16", features = ["chrono"]}
 async-graphql-actix-web = "=7.0.16"
 chrono = { version = "0.4.40", default-features = false, features = ["serde", "clock"] }
 # Dieselで NaiveDateTime を使うには、diesel の features に chrono を追加する

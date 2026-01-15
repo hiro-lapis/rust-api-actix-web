@@ -1,5 +1,11 @@
 # QA
 
+## references
+actix-web: https://actix.rs/, https://github.com/actix/actix-web
+Async-graphql Book: https://async-graphql.github.io/async-graphql/en/introduction.html
+diesel: https://docs.diesel.rs/main/diesel/index.html
+sqlx: https://docs.rs/sqlx/latest/sqlx/
+
 ## overview
 
 Q. What benefit Rust gives us ?
@@ -187,4 +193,4 @@ While they are useful, but I'm afraid of missing using them and write ugly code 
 
 
 * in each step, some layers require aditional dependencies. In this case, add dependencies in cargo.toml.  
-* make sure exporting new modules.  
+* make sure exporting new modules.
