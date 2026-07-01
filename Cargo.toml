@@ -16,6 +16,7 @@ members = [
 [workspace.dependencies] # sharable dependencies in the workspace. This setting is usually used only in main project's cargo.toml.
 db-schema = { path = "./db-schema" }
 actix-web = "4.10.2"
+actix-cors = "0.7"
 # 構造体をGraphqlで返すために使用
 # https://async-graphql.github.io/async-graphql/en/define_simple_object.html
 # レスポンスに使う構造体定義に、OutputType traitを使う
@@ -36,6 +37,7 @@ dotenvy = "0.15.7"
 [dependencies] # dependencies of this main project. Sub project's dependencies are written in sub project's cargo.toml.
 db-schema = { workspace = true }
 actix-web.workspace = true
+actix-cors.workspace = true
 async-graphql.workspace = true
 async-graphql-actix-web.workspace = true
 chrono.workspace = true
