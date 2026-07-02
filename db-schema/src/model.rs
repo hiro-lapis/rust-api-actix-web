@@ -1,12 +1,8 @@
-use diesel::prelude::*;
+use async_graphql::InputObject;
 use chrono::NaiveDateTime;
-use async_graphql::{InputObject};
+use diesel::prelude::*;
 
-#[derive(
-    Debug,
-    Queryable,
-    Selectable,
-)]
+#[derive(Debug, Queryable, Selectable)]
 #[diesel(table_name = crate::schema::users)]
 #[diesel(check_for_backend(diesel::pg::Pg))] // テーブル定義と合致するかチェック
 pub struct User {
@@ -67,7 +63,7 @@ pub struct Category {
 }
 
 #[derive(async_graphql::SimpleObject)]
-#[graphql(name = "Renamed")]  // 構造体をgraphql schemaとして公開するときの名前をリネーム可能
+#[graphql(name = "Renamed")] // 構造体をgraphql schemaとして公開するときの名前をリネーム可能
 pub struct SubCategory {
     #[graphql(skip)] // graphql schemaとして公開しないようにできる
     pub id: i32,
