@@ -94,7 +94,8 @@ psql -U app -d app
 ```
 
 
-## Dependencies
+## Tech stacks
 
 - [Actix Web](https://actix.rs/)
 - [Diesel/Diesel CLI](https://diesel.rs/)
+- [Next.js]()

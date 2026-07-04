@@ -1,0 +1,30 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "comment_rule_about_versionning": "specify version to avoid zero day attack",
+  "dependencies": {
+    "@tanstack/react-query": "5.100.10",
+    "next": "16.2.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.3.0",
+    "@tanstack/eslint-plugin-query": "^5.100.10",
+    "@types/node": "20.19.41",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "tailwindcss": "4.3.0",
+    "typescript": "5.8.3"
+  },
+  "packageManager": "pnpm@8.7.0+sha512.1d61f8c10e8a5a5dbfbddea0f1f5efb7dbd5177223073aec953cf230aa46416884b9427a6421dba78f28ad0f93fbede38ba57083237b350243de6b1e3a8ce71d"
+}

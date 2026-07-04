@@ -1,3 +1,4 @@
+use actix_cors::Cors;
 use actix_web::web::Data;
 use actix_web::{guard, web, App, HttpResponse, HttpServer, Result};
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
@@ -5,10 +6,10 @@ use async_graphql::{EmptySubscription, Object, Result as GqlResult, Schema};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 use chrono::{Datelike, FixedOffset, Timelike, Utc};
 use db_schema::model::*;
+use db_schema::schema::users::dsl::*;
 use diesel::{insert_into, prelude::*};
 use dotenvy::dotenv;
 use std::env;
-use db_schema::schema::users::dsl::*;
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 // Query, Mutationについて
@@ -23,7 +24,8 @@ impl Query {
     }
 
     // # on the frontend, query { now }
-    async fn now(&self) -> String { // Queryを実装するクラスが&selfで実行する
+    async fn now(&self) -> String {
+        // Queryを実装するクラスが&selfで実行する
         let jp_now = Utc::now().with_timezone(FixedOffset::east_opt(9 * 3600).as_ref().unwrap());
         format!(
             "{}年{}月{}日 {}:{}:{}",
@@ -60,23 +62,19 @@ impl Query {
                 id: 1,
                 name: "novel".to_string(),
                 created_at: chrono::NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
-                sub_categories: vec![
-                    SubCategory {
-                        id: 10,
-                        name: "right novel".to_string(),
-                    },
-                ],
+                sub_categories: vec![SubCategory {
+                    id: 10,
+                    name: "right novel".to_string(),
+                }],
             },
             Category {
                 id: 2,
                 name: "magazine".to_string(),
                 created_at: chrono::NaiveDate::from_ymd_opt(2023, 1, 1).unwrap(),
-                sub_categories: vec![
-                    SubCategory {
-                        id: 20,
-                        name: "weekly magazine".to_string(),
-                    },
-                ]
+                sub_categories: vec![SubCategory {
+                    id: 20,
+                    name: "weekly magazine".to_string(),
+                }],
             },
         ]
     }
@@ -96,17 +94,18 @@ impl Mutation {
     async fn create_user(&self, input: CreateUserInput) -> GqlResult<bool> {
         dbg!(&input);
         let con = &mut establish_connection();
-        let res = insert_into(users).values(
-            (
-                name.eq(input.name),
-                email.eq(input.email),
-                password.eq(input.password),
+        let res = insert_into(users)
+            .values(
+                (
+                    name.eq(input.name),
+                    email.eq(input.email),
+                    password.eq(input.password),
+                ), // 取得が不要な場合はexecute
             )
-            // 取得が不要な場合はexecute
-            ).execute(con)
-        // Graphqlサーバにおいてはエラー発生時の専用のエラーレスポンスを返す必要がある
-        // dieselのDBエラー型をそのまま返却するのはimpl Queryの制約に反するので型を変換してあげる
-        .map_err(|e| async_graphql::Error::new(e.to_string()))?;
+            .execute(con)
+            // Graphqlサーバにおいてはエラー発生時の専用のエラーレスポンスを返す必要がある
+            // dieselのDBエラー型をそのまま返却するのはimpl Queryの制約に反するので型を変換してあげる
+            .map_err(|e| async_graphql::Error::new(e.to_string()))?;
         Ok(res > 0)
     }
 
@@ -128,14 +127,21 @@ impl Mutation {
     /// }
     async fn create_users(&self, inputs: Vec<CreateUserInput>) -> GqlResult<Vec<User>> {
         let con = &mut establish_connection();
-        let res = insert_into(users).values(
-            inputs.iter().map(|input| (
-                name.eq(input.name.clone()),
-                email.eq(input.email.clone()),
-                password.eq(input.password.clone()),
-            )).collect::<Vec<_>>()
-        ).get_results(con)
-        .map_err(|e| async_graphql::Error::new(e.to_string()))?;
+        let res = insert_into(users)
+            .values(
+                inputs
+                    .iter()
+                    .map(|input| {
+                        (
+                            name.eq(input.name.clone()),
+                            email.eq(input.email.clone()),
+                            password.eq(input.password.clone()),
+                        )
+                    })
+                    .collect::<Vec<_>>(),
+            )
+            .get_results(con)
+            .map_err(|e| async_graphql::Error::new(e.to_string()))?;
         Ok(res)
     }
 }
@@ -168,6 +174,16 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap(
+                Cors::default()
+                    .allowed_origin(
+                        env::var("ALLOW_ORIGIN")
+                            .expect("allow origin is not set")
+                            .as_str(),
+                    )
+                    .allowed_methods(vec!["GET", "POST"])
+                    .allow_any_header(),
+            )
             .app_data(Data::new(schema.clone()))
             // json api
             .service(web::resource("/").guard(guard::Post()).to(index))
