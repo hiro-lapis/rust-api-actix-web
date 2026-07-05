@@ -1,7 +1,7 @@
 use actix_cors::Cors;
 use actix_web::web::Data;
-use actix_web::{guard, web, App, HttpResponse, HttpServer, Result};
-use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
+use actix_web::{App, HttpResponse, HttpServer, Result, guard, web};
+use async_graphql::http::{GraphQLPlaygroundConfig, playground_source};
 use async_graphql::{EmptySubscription, Object, Result as GqlResult, Schema};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 use chrono::{Datelike, FixedOffset, Timelike, Utc};
