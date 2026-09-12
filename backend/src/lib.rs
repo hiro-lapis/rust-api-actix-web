@@ -164,3 +164,17 @@ pub fn establish_connection() -> PgConnection {
     PgConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// フロントエンドは起動中サーバの introspection から型を生成するため、
+    /// スキーマに公開されるフィールドが意図せず消えていないことを確認する
+    #[test]
+    fn schema_exposes_dashboard_fields() {
+        let sdl = build_schema().sdl();
+        assert!(sdl.contains("now: String!"), "sdl: {}", sdl);
+        assert!(sdl.contains("totalPhotos: Int!"), "sdl: {}", sdl);
+    }
+}

@@ -18,8 +18,26 @@ Basically, you can build develop server on your laptop.
 
 ```
 cd frontend
+npm install
 npm run dev
 ```
+
+### GraphQL type generation
+
+The frontend types and react-query hooks in `frontend/gen/graphql.ts` are generated from the
+running backend via GraphQL introspection. **Start the backend first**, then run codegen.
+
+```
+# terminal 1
+cd backend && cargo make run
+
+# terminal 2
+cd frontend && npm run codegen
+```
+
+Queries live in `frontend/app/lib/queries/*.graphql`. Re-run `npm run codegen` after changing
+either those documents or the backend schema, and commit the regenerated `frontend/gen/graphql.ts`.
+The schema URL defaults to `http://localhost:8080/` and can be overridden with `GRAPHQL_SCHEMA_URL`.
 
 ## BE
 ```

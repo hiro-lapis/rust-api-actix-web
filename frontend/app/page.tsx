@@ -4,7 +4,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-import { useDashboard } from "@/app/lib/queries";
+import { useDashboardQuery } from "@/gen/graphql";
 
 
 const queryClient = new QueryClient()
@@ -19,7 +19,7 @@ export default function App() {
 }
 
 function Home() {
-  const { data, isPending, isError, error } = useDashboard()
+  const { data, isPending, isError, error } = useDashboardQuery()
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
