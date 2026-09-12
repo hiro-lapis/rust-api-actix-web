@@ -14,6 +14,14 @@ Note that `cargo run` seems to work, but fails in reading env vars.
 
 Basically, you can build develop server on your laptop.  
 
+## FE
+
+```
+cd frontend
+npm run dev
+```
+
+## BE
 ```
 cargo make run
 
