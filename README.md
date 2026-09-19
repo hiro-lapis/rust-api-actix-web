@@ -20,6 +20,10 @@ Basically, you can build develop server on your laptop.
 cd frontend
 npm install
 npm run dev
+
+// to avoid supply chain attack, make sure install exact version
+npm install --save-dev <package> --save-exact
+npm i <package> --save-exact
 ```
 
 ### GraphQL type generation
@@ -34,6 +38,22 @@ cd backend && cargo make run
 # terminal 2
 cd frontend && npm run codegen
 ```
+
+<details>
+<summary>details</summary>
+
+[ BE: cargo make run ]
+        │  http://localhost:8080/  (POST introspection)
+        ▼
+[ frontend/codegen.ts ]  ── documents: frontend/app/lib/queries/*.graphql
+        │
+        ▼
+[ frontend/gen/graphql.ts ]  ← コミット対象
+        │  fetcher: @/app/lib/graphql-client#fetcher
+        ▼
+[ frontend/app/page.tsx ]  useDashboardQuery()
+
+</details>
 
 Queries live in `frontend/app/lib/queries/*.graphql`. Re-run `npm run codegen` after changing
 either those documents or the backend schema, and commit the regenerated `frontend/gen/graphql.ts`.
