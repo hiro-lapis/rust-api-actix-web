@@ -1,25 +1,35 @@
-'use client'
+"use client";
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { useState } from "react";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { useDashboardQuery } from "@/gen/graphql";
 
-
-const queryClient = new QueryClient()
-
 export default function App() {
+  // in order to manage cache properly, we need to use useState and keep the same instance
+  // https://tanstack.com/query/v5/docs/eslint/stable-query-client
+  const [stableQueryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+            retry: false,
+          },
+        },
+      }),
+  );
   return (
     // Provide the client to your App
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={stableQueryClient}>
       <Home />
     </QueryClientProvider>
-  )
+  );
 }
 
 function Home() {
-  const { data, isPending, isError, error } = useDashboardQuery()
+  const { data, isPending, isError, error } = useDashboardQuery();
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -41,14 +51,18 @@ function Home() {
         {data && (
           <dl className="flex flex-col gap-4 text-lg">
             <div className="flex gap-2">
-              <dt className="font-medium text-zinc-600 dark:text-zinc-400">now:</dt>
+              <dt className="font-medium text-zinc-600 dark:text-zinc-400">
+                now:
+              </dt>
               <dd className="text-black dark:text-zinc-50">{data.now}</dd>
             </div>
             <div className="flex gap-2">
               <dt className="font-medium text-zinc-600 dark:text-zinc-400">
                 totalPhotos:
               </dt>
-              <dd className="text-black dark:text-zinc-50">{data.totalPhotos}</dd>
+              <dd className="text-black dark:text-zinc-50">
+                {data.totalPhotos}
+              </dd>
             </div>
           </dl>
         )}

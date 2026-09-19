@@ -7,6 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lint:fix": "eslint \"./app/**/*.{ts,tsx}\" --max-warnings=0 --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "cd .. && husky frontend/.husky",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "comment_rule_about_versionning": "specify version to avoid zero day attack",
@@ -29,7 +33,11 @@
     "@types/react-dom": "19.2.3",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.6",
+    "eslint-config-prettier": "10.1.8",
     "graphql": "16.14.2",
+    "husky": "9.1.7",
+    "lint-staged": "16.4.0",
+    "prettier": "3.9.7",
     "tailwindcss": "4.3.0",
     "typescript": "5.8.3"
   },

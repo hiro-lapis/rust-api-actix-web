@@ -6,7 +6,7 @@ type GraphQLResponse<T> = {
   errors?: { message: string }[];
 };
 
-export async function gqlRequest<T>(
+async function gqlRequest<T>(
   query: string,
   variables?: Record<string, unknown>,
   headers?: RequestInit["headers"],
