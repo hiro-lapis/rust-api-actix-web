@@ -150,8 +150,6 @@ pub type ApiSchema = Schema<Query, Mutation, EmptySubscription>;
 
 /// build graphql schema for api
 pub fn build_schema() -> ApiSchema {
-    // ここでGraphqサーバとしてのスキーマ定義をバインドする。
-    // ここにMutationを使うようにしてもApiSchemaの定義でEmptyMutationを使用してるとMutationが使えないので注意
     Schema::build(Query, Mutation, EmptySubscription).finish()
 }
 

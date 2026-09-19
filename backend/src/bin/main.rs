@@ -24,6 +24,8 @@ async fn index_playground() -> Result<HttpResponse> {
 async fn main() -> std::io::Result<()> {
     // Load env vars from `.env` if present (docker-compose / cargo-make may also provide env directly).
     dotenv().ok();
+    // Graphqサーバとしてのスキーマ定義をバインドする。
+    // Mutationを使うようにしてもApiSchemaの定義でEmptyMutationを使用してるとMutationが使えないので注意
     let schema = build_schema();
 
     println!("Playground: http://localhost:8080");
