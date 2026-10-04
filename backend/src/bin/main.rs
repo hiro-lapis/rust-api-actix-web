@@ -2,13 +2,12 @@ use actix_cors::Cors;
 use actix_web::web::Data;
 use actix_web::{App, HttpResponse, HttpServer, Result, guard, web};
 use async_graphql::http::{GraphQLPlaygroundConfig, playground_source};
-use async_graphql::{EmptySubscription, Schema};
 use async_graphql_actix_web::{GraphQLRequest, GraphQLResponse};
 use dotenvy::dotenv;
 use std::env;
 use std::net::{Ipv4Addr, Ipv6Addr};
 
-use app::{Query, Mutation, ApiSchema};
+use app::{ApiSchema, build_schema};
 
 async fn index(schema: web::Data<ApiSchema>, req: GraphQLRequest) -> GraphQLResponse {
     schema.execute(req.into_inner()).await.into()
@@ -25,9 +24,9 @@ async fn index_playground() -> Result<HttpResponse> {
 async fn main() -> std::io::Result<()> {
     // Load env vars from `.env` if present (docker-compose / cargo-make may also provide env directly).
     dotenv().ok();
-    // ここでGraphqサーバとしてのスキーマ定義をバインドする。
-    // ここにMutationを使うようにしてもApiSchemaの定義でEmptyMutationを使用してるとMutationが使えないので注意
-    let schema = Schema::build(Query, Mutation, EmptySubscription).finish();
+    // Graphqサーバとしてのスキーマ定義をバインドする。
+    // Mutationを使うようにしてもApiSchemaの定義でEmptyMutationを使用してるとMutationが使えないので注意
+    let schema = build_schema();
 
     println!("Playground: http://localhost:8080");
 

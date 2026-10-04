@@ -6,4 +6,7 @@
         "files.trimTrailingWhitespace": false,
         "editor.renderWhitespace": "boundary"
     },
+    // codecompletion by continue
+    "editor.inlineSuggest.enabled": true,
+    "editor.tabCompletion": "on"
 }
